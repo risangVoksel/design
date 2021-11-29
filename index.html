@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Coba coba Design</title>
     <link rel="stylesheet" href="res/bootstrap-5.1.1/bootstrap.min.css" />
 </head>
+
 <body>
 
     <div class="container">
@@ -18,20 +20,129 @@
         <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
-                  <h5 class="mb-1">List group item heading</h5>
-                  <small class="text-muted">3 days ago</small>
+                    <h5 class="mb-1">List group item heading</h5>
+                    <small class="text-muted">3 days ago</small>
                 </div>
                 <p class="mb-1">Some placeholder content in a paragraph.</p>
                 <small class="text-muted">And some muted small print.</small>
-              </a>
+            </a>
 
         </div>
+    </div>
+
+    <div class="container">
+        <h5 class="mt-5">Dropdown Select</h5>
+        <form>
+            <div class="dropdown">
+                <a href="#" class="list-group-item list-group-item-action" rayapp-toggle="dropdown" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">List group item heading</h5>
+                        <small>3 days ago</small>
+                    </div>
+                    <p class="mb-1">Some placeholder content in a paragraph.</p>
+                    <small>And some small print.</small>
+                </a>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
     </div>
 
     <script src="res/jquery/jquery-3.6.0.min.js"></script>
     <script src="res/bootstrap-5.1.1/bootstrap.bundle.min.js"></script>
     <script>
 
+        (function () {
+
+            $.fn.rayappDropdown = function () {
+
+                var Rayappdropdown = function (elm) {
+
+                    var $this = this;
+                    var ini = $(elm);
+                    var ortu = ini.parents('.dropdown').eq(0);
+
+                    var mn = $('<div class="dropdown-menu w-100"></div>');
+                    var frm = $('<div class="px-2"><input type="search" class="cari form-control" /></div>');
+
+                    ini.attr('data-bs-toggle', 'dropdown');
+                    //ini.attr('data-bs-display', 'static');
+                    ini.attr('data-bs-offset', '0, -2');
+
+                    frm.find('input').eq(0).on('keyup', function (e) {
+                        var ini = $(this);
+
+                        $this.cari(ini.val());
+                    });
+
+                    frm.find('input').eq(0).on('keypress', function (e) {
+                       
+                        if( e.keyCode == 13 ){
+                            e.preventDefault();
+
+
+                        }
+                        
+                    })
+
+                    mn.append(frm);
+
+                    mn.append('<hr class="my-3 dropdown-divider" />');
+                    mn.append('<div class="p-2 bg-warning bg-opacity-10"><div class="spinner-border spinner-grow-sm" role="status" aria-hidden="true"></div><span> Mencari...</span></div>');
+
+                    mn.css({ 'marginTop': '-2px', 'borderTopColor': 'transparent' })
+
+                    ortu.append(mn);
+
+                    ini.on('shown.bs.dropdown', function () {
+                        
+                        var ortu = $(this).parents('.dropdown').eq(0);
+
+                        $('input.cari')[0].focus();
+                    })
+
+
+                }
+
+                Rayappdropdown.prototype.cari = function (txt) {
+
+                    this.text = txt;
+
+                    if( txt != '' ){
+
+                        this.load();
+
+                    }
+                    
+                }
+
+                Rayappdropdown.prototype.load = function () {
+                    
+                    console.log( 'load', this.text);
+
+                    $.ajax({
+                        url: '',
+                        beforeSend: function(){
+
+                        }
+
+                    });
+
+                }
+
+                $(this).each(function () {
+
+                    return new Rayappdropdown(this)
+
+                });
+
+            }
+
+
+            $('[rayapp-toggle="dropdown"]').rayappDropdown();
+
+        })(window)
+
     </script>
 </body>
+
 </html>
