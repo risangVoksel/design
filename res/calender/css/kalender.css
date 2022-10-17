@@ -1,0 +1,10 @@
+.kalender{
+     gap: 0.25em;
+}
+
+.kalender .cal-tgl,
+.kalender .cal-week{
+     display: grid;
+     grid-template-columns: repeat(7, 1fr);
+     align-items: center;
+}
