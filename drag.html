@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+
+        }
+
+        div.elm {
+            position: absolute;
+            background-color: blueviolet;
+            box-shadow: 0 0 2px #ccc;
+            user-select: none;
+            padding: 1rem;
+            color: white;
+
+            width: 100px;
+            height: 100px;
+        }
+
+        .workspace {
+            width: 100vw;
+            height: 100vh;
+            /* position: relative;
+            overflow: hidden; */
+        }
+
+        .cursor-select {
+            position: absolute;
+            background-color: #ffc10724;
+            border: 2px dashed #ffc107;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="workspace">
+
+        <div class="isi">
+            <div class="elm">
+                Drag Ini
+            </div>
+
+            <div class="elm">
+                Drag Ini
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="res/jquery/jquery-3.6.0.min.js"></script>
+    <script>
+
+        $(document).on('mousedown', '.workspace', function (e) {
+
+            var trg = $(e.target);
+
+            if (!trg.hasClass('elm')) {
+
+                if (e.shiftKey) {
+
+                    $(e.currentTarget).css('cursor', 'crosshair');
+
+                    if ($(e.currentTarget).find('.cursor-select').length == 0) {
+
+                        var d = $('<div class="cursor-select"></div>');
+
+                        d.offset({
+                            top: e.clientY,
+                            left: e.clientX
+                        });
+
+                        $(e.currentTarget).append(d);
+                    }
+
+                } else {
+
+                    $(e.currentTarget).data('posisi', {
+                        x: e.clientX,
+                        y: e.clientY
+                    })
+
+                }
+
+
+            } else {
+
+                trg.addClass('dragable');
+
+                trg.data('posisi', {
+                    x: e.clientX,
+                    y: e.clientY
+                })
+
+                trg.data('letak', {
+                    left: trg.offset().left,
+                    top: trg.offset().top
+                });
+
+            }
+
+        })
+
+
+        $(document).on('mousemove', function (e) {
+
+            if ($('.elm.dragable').length > 0) {
+
+                $('.elm.dragable').each(function () {
+                    var ini = $(this);
+                    var awal = ini.data('posisi');
+                    var pos = ini.data('letak');
+
+                    var y = awal.y;
+                    var x = awal.x;
+
+                    var h = ini.outerHeight();
+                    var w = ini.outerWidth();
+
+                    var geserX = e.clientX - x;
+                    var geserY = e.clientY - y;
+
+                    //console.log(geserX, geserY)
+
+                    ini.offset({
+                        top: pos.top + geserY,
+                        left: pos.left + geserX
+                    })
+                });
+
+            } else if ($('.workspace .cursor-select').length > 0) {
+
+                var s = $('.workspace .cursor-select');
+                var pos = s.offset();
+
+                var w = e.clientX - pos.left;
+                var h = e.clientY - pos.top;
+
+                var vw = $(window).width();
+                var vh = $(window).height();
+
+                s.width(w);
+                s.height(h);
+
+                console.log(vw, e.clientX)
+
+                if ((e.clientX) > vw || (e.clientY) > vh) {
+
+                    var x = vw - (e.clientX);
+                    var y = vh - (e.clientY);
+
+                    // y = y > 0 ? y : 0;
+                    // x = x > 0 ? x : 0;
+
+                    var t = `translate(${x}px, ${y}px)`;
+
+                    // $('.workspace').css({
+                    //     'transform': t
+                    // })
+                }
+
+            } else {
+
+
+
+            }
+
+        }).on('mouseup', function (e) {
+            $('.workspace').css('cursor', 'default');
+            $('.elm.dragable').removeClass('dragable');
+            $('.workspace .cursor-select').remove();
+        })
+
+    </script>
+</body>
+
+</html>
